@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Green Mobility Pass</title>
+<style>
+  :root{--bg:#f4f4f9;--text:#333;--card:#fff;--primary:#2ecc71;--accent:#fbbf24}
+  body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+  header{background:linear-gradient(135deg,#16a34a,#22c55e);padding:2rem 1rem;text-align:center;color:#fff}
+  header h1{margin:0;font-size:2.4rem}
+  header p{margin:.5rem 0 1.25rem}
+  header a{display:inline-block;background:#fff;color:#16a34a;padding:.75rem 1.25rem;border-radius:999px;text-decoration:none;font-weight:700}
+  .container{max-width:1100px;margin:2rem auto;padding:0 1rem}
+  .counter{font-size:2rem;font-weight:800;margin:.25rem 0 1rem;color:#16a34a}
+  .subscription-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:1.5rem}
+  .card{background:var(--card);padding:1.5rem;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08);border:1px solid #e5e7eb;transition:transform .25s,box-shadow .25s}
+  .card:hover{transform:translateY(-8px);box-shadow:0 12px 30px rgba(0,0,0,.15)}
+  .card h3{margin:.25rem 0;color:#16a34a}
+  .price{font-size:1.75rem;font-weight:800;margin:.25rem 0 .75rem}
+  .badge{display:inline-block;background:var(--accent);color:#111;padding:.25rem .6rem;border-radius:999px;font-size:.85rem;font-weight:700}
+  .btn{display:inline-block;border:none;background:var(--primary);color:#fff;padding:.65rem 1rem;border-radius:10px;cursor:pointer;font-weight:700;transition:background .2s,transform .1s}
+  .btn:hover{background:var(--primary-dark)}
+  .btn:active{transform:scale(.98)}
+  .section{margin:2rem auto;padding:0 1rem;max-width:1100px}
+  .impact{background:#ecfdf5;border:1px solid #a7f3d0;border-radius:16px;padding:24px;text-align:center}
+  .bar{background:#e5e7eb;border-radius:12px;overflow:hidden;height:18px;margin:12px 0}
+  .bar span{display:block;height:100%;width:70%;background:linear-gradient(90deg,#16a34a,#22c55e)}
+  footer{text-align:center;background:#111;color:#eee;padding:18px;margin-top:32px}
+  .dark{--bg:#121212;--text:#f5f5f5;--card:#1d1d1d}
+  .toggle-btn{margin-top:1.25rem;padding:.6rem 1rem;border:none;border-radius:10px;cursor:pointer;background:#16a34a;color:#fff;font-weight:700}
+
+  /* ===== Ticket Modal ===== */
+  .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.55);padding:1rem}
+  .modal.open{display:grid}
+  .ticket{background:var(--card);color:var(--text);border-radius:16px;width:min(560px,92vw);box-shadow:0 20px 50px rgba(0,0,0,.35);border:1px solid #e5e7eb;position:relative;overflow:hidden}
+  .ticket::before,.ticket::after{content:"";position:absolute;width:20px;height:20px;background:var(--bg);border-radius:50%;top:50%;transform:translateY(-50%);z-index:1}
+  .ticket::before{left:-10px}
+  .ticket::after{right:-10px}
+  .ticket header{background:linear-gradient(135deg,#16a34a,#22c55e);padding:16px;color:#fff;text-align:left}
+  .ticket header h4{margin:0;font-size:1.25rem}
+  .ticket .body{padding:16px;display:grid;grid-template-rows:repeat(5,auto);gap:8px}
+  .ticket .meta b{display:block;font-size:1.05rem;margin-top:4px}
+  .ticket .perforation{border-top:2px dashed #999;margin:12px 0;position:relative}
+  .ticket .perforation::before,.ticket .perforation::after{content:"";width:10px;height:10px;background:var(--bg);border-radius:50%;position:absolute;top:-5px}
+  .ticket .perforation::before{left:-5px}
+  .ticket .perforation::after{right:-5px}
+  .btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
+  @media (max-width:560px){.ticket .body{grid-template-rows:repeat(5,auto)}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🌱 Green Mobility Pass</h1>
+  <p>Travel Unlimited. Save Money. Save the Planet.</p>
+  <a href="#plans">Get Your First Ride Free</a>
+</header>
+
+<main class="container">
+  <h2>CO₂ Saved by Our Users</h2>
+  <div class="counter" id="co2Counter">0 kg</div>
+
+  <h2 id="plans">Choose Your Subscription</h2>
+  <div class="subscription-cards">
+    <div class="card">
+      <span class="badge">First ride free</span>
+      <h3>Monthly Pass</h3>
+      <p>Unlimited rides for 30 days.</p>
+      <div class="price">₹499</div>
+      <button class="btn" onclick="openPass('Monthly Pass','₹499',30)">Get Pass</button>
+    </div>
+    <div class="card" style="border-color:#fde68a">
+      <span class="badge">Best value</span>
+      <h3>Annual Pass ⭐</h3>
+      <p>1 Year subscription with exclusive perks.</p>
+      <div class="price">₹4999</div>
+      <button class="btn" onclick="openPass('Annual Pass','₹4999',365)">Get Pass</button>
+    </div>
+    <div class="card">
+      <span class="badge">Student offer</span>
+      <h3>Student Pass</h3>
+      <p>Discounted rides for students.</p>
+      <div class="price">₹299 / month</div>
+      <button class="btn" onclick="openPass('Student Pass','₹299',30)">Get Pass</button>
+    </div>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleMode()">🌙 Toggle Dark/Light Mode</button>
+</main>
+
+<!-- ===== How It Works ===== -->
+<section class="section">
+  <h2>How It Works</h2>
+  <div class="subscription-cards">
+    <div class="card">
+      <h3>1️⃣ Choose Your Pass</h3>
+      <p>Select a plan that suits your travel needs.</p>
+    </div>
+    <div class="card">
+      <h3>2️⃣ Get Your Digital Pass</h3>
+      <p>Click “Get Pass” to generate a printable or digital mobility pass instantly.</p>
+    </div>
+    <div class="card">
+      <h3>3️⃣ Travel & Save CO₂</h3>
+      <p>Use your pass for unlimited rides and contribute to a greener planet.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Testimonials ===== -->
+<section class="section">
+  <h2>What Our Users Say</h2>
+  <div class="subscription-cards">
+    <div class="card">
+      <p>“I saved so much money and reduced my carbon footprint! 🌱”</p>
+      <b>- Priya K.</b>
+    </div>
+    <div class="card">
+      <p>“The digital pass is easy to print and carry. Love it!”</p>
+      <b>- Rahul S.</b>
+    </div>
+    <div class="card">
+      <p>“Finally, a service that makes public transport rewarding.”</p>
+      <b>- Ananya P.</b>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQs ===== -->
+<section class="section">
+  <h2>FAQs</h2>
+  <div class="subscription-cards">
+    <div class="card">
+      <h3>Who collects the pass?</h3>
+      <p>The pass can be shown to the driver or conductor on your mobile device or printed copy.</p>
+    </div>
+    <div class="card">
+      <h3>Can I use it multiple times?</h3>
+      <p>Yes! Each plan allows unlimited rides for its validity period.</p>
+    </div>
+    <div class="card">
+      <h3>Is it secure?</h3>
+      <p>Every pass has a unique Pass ID which can be verified by our system.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Impact Section ===== -->
+<section class="section">
+  <h2>Our Impact</h2>
+  <div class="impact">
+    <p>CO₂ Saved: <strong id="impactKg">12,500 kg</strong></p>
+    <div class="bar"><span id="impactBar"></span></div>
+    <p>Cars Replaced by Public Transport: <strong>350+</strong></p>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Green Mobility Pass | Travel Unlimited. Save the Planet 🌍</p>
+</footer>
+
+<!-- ===== MODAL: Printable Ticket ===== -->
+<div class="modal" id="passModal" aria-hidden="true">
+  <div class="ticket" role="dialog" aria-modal="true">
+    <header>
+      <h4>Your Mobility Pass — First Ride Free ✅</h4>
+    </header>
+    <div class="body">
+      <div class="meta">
+        <b id="mPlan">Plan: —</b>
+        <b id="mId">Pass ID: —</b>
+        <b id="mPrice">Price: —</b>
+        <b id="mExpiry">Valid Until: —</b>
+      </div>
+      <!-- Simple barcode design -->
+      <div class="barcode" style="margin:10px 0;display:flex;justify-content:space-between;">
+        <div style="width:4px;height:40px;background:#111;"></div>
+        <div style="width:4px;height:40px;background:#111;"></div>
+        <div style="width:4px;height:40px;background:#111;"></div>
+        <div style="width:4px;height:40px;background:#111;"></div>
+        <div style="width:4px;height:40px;background:#111;"></div>
+      </div>
+      <div class="perforation"></div>
+      <div class="btn-row">
+        <button class="btn" onclick="window.print()">Print Pass</button>
+        <button class="btn" onclick="sharePass()">Share Pass</button>
+        <button class="btn" onclick="closePass()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== Animated CO₂ Counter =====
+  (function(){
+    const el=document.getElementById('co2Counter'),target=12500;
+    let n=0,step=Math.ceil(target/180);
+    function tick(){n=Math.min(target,n+step);el.textContent=n.toLocaleString()+' kg';if(n<target)requestAnimationFrame(tick);}
+    tick();
+  })();
+
+  // ===== Impact Bar Animation =====
+  (function(){
+    const bar=document.getElementById('impactBar');
+    bar.style.width='0%';
+    setTimeout(()=>{bar.style.transition='width 1.2s ease';bar.style.width='82%';},200);
+  })();
+
+  // ===== Dark/Light Mode =====
+  function toggleMode(){document.body.classList.toggle('dark');}
+
+  // ===== Open/Close Pass =====
+  function openPass(plan,price,days){
+    document.getElementById('mPlan').textContent='Plan: '+plan;
+    document.getElementById('mPrice').textContent='Price: '+price;
+    document.getElementById('mId').textContent='Pass ID: '+Math.floor(Math.random()*1e6);
+    const expiry=new Date();expiry.setDate(expiry.getDate()+days);
+    document.getElementById('mExpiry').textContent='Valid Until: '+expiry.toLocaleDateString();
+    document.getElementById('passModal').classList.add('open');
+  }
+  function closePass(){document.getElementById('passModal').classList.remove('open');}
+
+  // ===== Share Pass =====
+  function sharePass(){
+    const plan = document.getElementById('mPlan').textContent;
+    const id = document.getElementById('mId').textContent;
+    const msg = encodeURIComponent(`My Green Mobility Pass:\n${plan}\n${id}`);
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
+  }
+</script>
+</body>
+</html>
